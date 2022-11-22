@@ -51,14 +51,13 @@
                 {% endfor %}
             </div>
             <br>
-            
+            {% if user.is_authenticated %}
             <div class="card border-success mb-3">
                 <div class="card-header">Start Exam</div>
                 <div class="card-body">
                     <div id="accordion">
                         <form id="questionform" action="{% url 'onlinecourse:submit' course.pk%}" method="post">
-                            {% for lesson in course.lesson_set.all %}
-                                {% for question in lesson.question_set.all %}
+                            {% for question in course.question_set.all %}
                                 <div class="card mt-2">
                                     <div class="card-header"><h5>{{ question.question_text}}</h5></div>
                                     {% csrf_token %}
@@ -74,7 +73,6 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                                {% endfor %}
                             {% endfor %}
                             <br>
                             <input class="btn btn-success btn-block" type="submit" value="Submit">
@@ -83,29 +81,7 @@
                     
                 </div>
               </div>
-
-            <!-- A choice submission form example
-            <form id="questionform" action="point to a submit view" method="post">
-                        ... for each question in the course ...
-                        <div class="card mt-1">
-                            <div class="card-header"><h5>{{ question.question_text}}</h5></div>
-                            {% csrf_token %}
-                            <div class="form-group">
-                               ... for each choice in the question ...
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" name="choice_{{choice.id}}"
-                                               class="form-check-input" id="{{choice.id}}"
-                                               value="{{choice.id}}">{{ choice.choice_text }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    <input class="btn btn-success btn-block" type="submit" value="Submit">
-            </form> -->
-
-            <!--Check here to see more details Bootstrap checkbox
-             https://www.w3schools.com/bootstrap4/bootstrap_forms_inputs.asp-->
+              {% endif %}
     </div>
 </body>
 </html>

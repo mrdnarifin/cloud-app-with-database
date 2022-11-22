@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 # <HINT> Import any new Models here
-from .models import Course, Enrollment, Submission, Question
+from .models import Course, Enrollment, Submission, Question, Choice
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -118,13 +118,34 @@ def submit(request, course_id):
     return redirect('onlinecourse:result', course_id, submission.id)
 
 
-# <HINT> Create an exam result view to check if learner passed exam and show their question results and result for each question,
-# you may implement it based on the following logic:
-        # Get course and submission based on their ids
-        # Get the selected choice ids from the submission record
-        # For each selected choice, check if it is a correct answer or not
-        # Calculate the total score
-# def show_exam_result(request, course_id, submission_id):
+def show_exam_result(request, course_id, submission_id):
+    context = {}
+    course = get_object_or_404(Course, pk=course_id)
+    submission = get_object_or_404(Submission, pk=submission_id)
+    selected = submission.choices.all()
+    total_score = 0
+    score = 0
+    choice = 0
+    for question in course.question_set.all():
+        count = question.choice_set.count()
+        grade = question.grade / count
+        total_score += question.grade
+
+        for s in selected:
+            c = get_object_or_404(Choice, pk=s.id)
+            if c.is_correct:
+                score += grade
+            else:
+                score -= grade
+
+    context['selected'] = selected
+    context['course'] = course
+    context['score'] = (score/total_score) * 100
+    context['total_score'] = (total_score/total_score) * 100
+    return  render(request, 'onlinecourse/exam_result_bootstrap.html', context)
+
+
+
 
 
 
