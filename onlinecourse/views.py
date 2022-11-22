@@ -137,11 +137,10 @@ def show_exam_result(request, course_id, submission_id):
                 score += grade
             else:
                 score -= grade
-
     context['selected'] = selected
     context['course'] = course
-    context['score'] = (score/total_score) * 100
-    context['total_score'] = (total_score/total_score) * 100
+    context['score'] = abs(score/total_score) * 100
+    context['total_score'] = abs(total_score/total_score) * 100
     return  render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
